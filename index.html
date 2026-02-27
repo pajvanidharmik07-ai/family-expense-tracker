@@ -36,6 +36,11 @@
       margin: 5px 0;
       font-weight: bold;
     }
+    .transaction {
+      font-size: 13px;
+      border-bottom: 1px solid #eee;
+      padding: 5px 0;
+    }
   </style>
 </head>
 <body>
@@ -44,11 +49,16 @@
 
 <div class="card">
   <h3>Add Transaction</h3>
+
   <input type="date" id="date">
+
+  <input type="text" id="person" placeholder="Who Spent? (e.g. Dad, Mom)">
+
   <select id="type">
     <option value="income">Income</option>
     <option value="expense">Expense</option>
   </select>
+
   <select id="category">
     <option>Food</option>
     <option>Medicine</option>
@@ -57,7 +67,11 @@
     <option>Transport</option>
     <option>Other</option>
   </select>
+
+  <input type="text" id="description" placeholder="Description (e.g. Grocery, Petrol)">
+
   <input type="number" id="amount" placeholder="Amount">
+
   <button onclick="addTransaction()">Add</button>
 </div>
 
@@ -86,21 +100,31 @@
   <canvas id="barChart"></canvas>
 </div>
 
+<div class="card">
+  <h3>Transactions</h3>
+  <div id="transactionList"></div>
+</div>
+
 <script>
 let transactions = JSON.parse(localStorage.getItem("transactions")) || [];
 
 function addTransaction() {
   const date = document.getElementById("date").value;
+  const person = document.getElementById("person").value;
   const type = document.getElementById("type").value;
   const category = document.getElementById("category").value;
+  const description = document.getElementById("description").value;
   const amount = parseFloat(document.getElementById("amount").value);
 
-  if (!date || !amount) return alert("Fill all fields");
+  if (!date || !person || !amount) return alert("Fill all required fields");
 
-  transactions.push({ date, type, category, amount });
+  transactions.push({ date, person, type, category, description, amount });
   localStorage.setItem("transactions", JSON.stringify(transactions));
 
   document.getElementById("amount").value = "";
+  document.getElementById("description").value = "";
+  document.getElementById("person").value = "";
+
   updateUI();
 }
 
@@ -133,6 +157,7 @@ function updateUI() {
 
   let income = 0, expense = 0;
   let categories = {};
+  let listHTML = "";
 
   data.forEach(t => {
     if (t.type === "income") income += t.amount;
@@ -140,7 +165,16 @@ function updateUI() {
       expense += t.amount;
       categories[t.category] = (categories[t.category] || 0) + t.amount;
     }
+
+    listHTML += `
+      <div class="transaction">
+        <strong>${t.person}</strong> spent ${t.amount} on ${t.category}
+        <br><small>${t.description} | ${t.date}</small>
+      </div>
+    `;
   });
+
+  document.getElementById("transactionList").innerHTML = listHTML;
 
   document.getElementById("income").innerText = "Income: " + income;
   document.getElementById("expense").innerText = "Expense: " + expense;
@@ -168,3 +202,4 @@ updateUI();
 
 </body>
 </html>
+
