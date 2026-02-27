@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Family Expense Tracker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial;
+      background: #f4f6f9;
+      padding: 20px;
+      margin: 0;
+    }
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    button {
+      background: #4CAF50;
+      color: white;
+      border: none;
+    }
+    h2 {
+      margin-top: 0;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Family Expense Tracker</h1>
+
+<div class="card">
+  <h2>Add Transaction</h2>
+  <select id="type">
+    <option value="income">Income</option>
+    <option value="expense">Expense</option>
+  </select>
+  <input type="text" id="category" placeholder="Category (Food, Medicine...)">
+  <input type="number" id="amount" placeholder="Amount">
+  <button onclick="addTransaction()">Add</button>
+</div>
+
+<div class="card">
+  <h2>Summary</h2>
+  <p id="income">Income: 0</p>
+  <p id="expense">Expense: 0</p>
+  <p id="balance">Balance: 0</p>
+</div>
+
+<script>
+let income = 0;
+let expense = 0;
+
+function addTransaction() {
+  const type = document.getElementById("type").value;
+  const amount = parseFloat(document.getElementById("amount").value);
+
+  if (!amount) return;
+
+  if (type === "income") {
+    income += amount;
+  } else {
+    expense += amount;
+  }
+
+  document.getElementById("income").innerText = "Income: " + income;
+  document.getElementById("expense").innerText = "Expense: " + expense;
+  document.getElementById("balance").innerText = "Balance: " + (income - expense);
+
+  document.getElementById("amount").value = "";
+}
+</script>
+
+</body>
+</html>
